@@ -1,7 +1,7 @@
 import toast from "solid-toast";
 
 export function success(message: string) {
-  toast.success(message, { position: "bottom-center" });
+  toast.success(message, { position: "bottom-center", duration: 2500 });
 }
 
 export function warn(message: string) {
@@ -16,9 +16,10 @@ export function warn(message: string) {
       color: "#c2410c",
       background: "#ffedd5",
     },
+    duration: 2500,
   });
 }
 
 export function error(message: string) {
-  toast.error(message, { position: "bottom-center" });
+  toast.error(message, { position: "bottom-center", duration: 2500 });
 }

@@ -12,7 +12,7 @@
     "@capacitor/android": "^5.2.1",
     "@capacitor/core": "^5.2.1",
     "@capacitor/ios": "^5.2.1",
-    "@ionic-enterprise/identity-vault": "5.11.2-dev-20230717T124607.0",
+    "@ionic-enterprise/identity-vault": "5.11.2-dev-20230724T151610.0",
     "solid-js": "^1.7.7",
     "solid-toast": "^0.5.0"
   },
