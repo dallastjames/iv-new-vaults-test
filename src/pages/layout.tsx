@@ -46,7 +46,7 @@ function DeviceSecurity() {
   const actions: Action[] = [
     {
       label: "Check Lock Status",
-      btnLabel: "vault.isLocked()",
+      btnLabel: "isLocked()",
       action: async () => {
         try {
           const lockStatus = await isLocked();
@@ -59,7 +59,7 @@ function DeviceSecurity() {
     },
     {
       label: "Lock",
-      btnLabel: "vault.lock()",
+      btnLabel: "lock()",
       action: async () => {
         try {
           await lock();
@@ -72,7 +72,7 @@ function DeviceSecurity() {
     },
     {
       label: "Unlock",
-      btnLabel: "vault.unlock()",
+      btnLabel: "unlock()",
       action: async () => {
         try {
           await unlock();
@@ -85,7 +85,7 @@ function DeviceSecurity() {
     },
     {
       label: "Attempt Read",
-      btnLabel: "vault.getValue()",
+      btnLabel: "getValue()",
       action: async () => {
         if (!vault()) return warn("Vault not initialized");
         const data = await vault()?.getValue(SIMPLE_STRING_KEY);
@@ -95,7 +95,7 @@ function DeviceSecurity() {
     },
     {
       label: "Attempt Write",
-      btnLabel: "vault.setValue()",
+      btnLabel: "setValue()",
       action: async () => {
         try {
           const value = prompt("Enter a value to write to the vault");
@@ -105,6 +105,19 @@ function DeviceSecurity() {
           success(`Value written to vault: ${value}`);
         } catch (e) {
           error(`Error writing to vault: ${JSON.stringify(e)}`);
+        }
+      },
+    },
+    {
+      label: "Attempt Delete",
+      btnLabel: "removeValue()",
+      action: async () => {
+        try {
+          if (!vault()) return warn("Vault not initialized");
+          vault()?.removeValue(SIMPLE_STRING_KEY);
+          success(`Value deleted from vault`);
+        } catch (e) {
+          error(`Error deleting from vault: ${JSON.stringify(e)}`);
         }
       },
     },
