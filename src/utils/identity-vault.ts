@@ -2,9 +2,10 @@ import {
   DeviceSecurityVault,
   DeviceSecurityVaultOptions,
   destroyVaultByVaultId,
+  getVaultTypeForVaultId,
 } from "@ionic-enterprise/identity-vault";
 import { Accessor, createSignal } from "solid-js";
-import { error, success, warn } from "./toast";
+import { error, warn } from "./toast";
 
 const vaultId = "com.dallastjames.ionic.iv.newvault.myvault";
 
@@ -19,6 +20,7 @@ type UseDeviceSecurityVaultReturnType = [
     isLocked: () => Promise<boolean>;
     lock: () => Promise<void>;
     unlock: () => Promise<void>;
+    unloadVaultFromMemory: () => Promise<void>;
   }
 ];
 
@@ -31,7 +33,7 @@ export function useDeviceSecurityVault(): UseDeviceSecurityVaultReturnType {
       }
       const newVault = await DeviceSecurityVault.instance(vaultId);
       if (await newVault.exists()) {
-        warn("Vault already exists");
+        warn("Using existing vault");
         setVault(newVault);
         return;
       }
@@ -57,9 +59,9 @@ export function useDeviceSecurityVault(): UseDeviceSecurityVaultReturnType {
   };
   const exists = async () => {
     try {
-      const exists = vault()?.exists();
-      warn(`exists: ${exists}`);
-      return !!exists;
+      const vaultType = await getVaultTypeForVaultId(vaultId);
+      const vaultExists = !!vaultType;
+      return vaultExists;
     } catch (e) {
       error(`exists: ${JSON.stringify(e)}`);
       return false;
@@ -74,7 +76,6 @@ export function useDeviceSecurityVault(): UseDeviceSecurityVaultReturnType {
       }
       const exists = await vault()?.exists();
       const locked = await vault()?.isLocked();
-      warn(`isLocked: ${exists} ${locked}`);
       return !exists || !!locked;
     } catch (e: any) {
       error(`isLocked: ${JSON.stringify(e)}`);
@@ -95,6 +96,20 @@ export function useDeviceSecurityVault(): UseDeviceSecurityVaultReturnType {
       error(`VAULT UNLOCK ERROR: ${JSON.stringify(e)}`);
     }
   };
+  const unloadVaultFromMemory = async () => {
+    setVault(null);
+  };
 
-  return [vault, { createVault, exists, destroyVault, isLocked, lock, unlock }];
+  return [
+    vault,
+    {
+      createVault,
+      exists,
+      destroyVault,
+      isLocked,
+      lock,
+      unlock,
+      unloadVaultFromMemory,
+    },
+  ];
 }

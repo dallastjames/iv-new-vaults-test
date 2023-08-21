@@ -40,8 +40,18 @@ type Action = {
 
 function DeviceSecurity() {
   const [locked, setLocked] = createSignal<boolean | null>(null);
-  const [vault, { isLocked, createVault, lock, unlock }] =
-    useDeviceSecurityVault();
+  const [
+    vault,
+    {
+      isLocked,
+      createVault,
+      lock,
+      unlock,
+      exists,
+      destroyVault,
+      unloadVaultFromMemory,
+    },
+  ] = useDeviceSecurityVault();
 
   const actions: Action[] = [
     {
@@ -121,6 +131,31 @@ function DeviceSecurity() {
         }
       },
     },
+    {
+      label: "Destroy Vault",
+      btnLabel: "destroy()",
+      action: async () => {
+        try {
+          await vault()?.destroy();
+          success(`Vault destroyed`);
+        } catch (e) {
+          error(`Error destroying vault: ${JSON.stringify(e)}`);
+        }
+      },
+    },
+    {
+      label: "Unload Vault",
+      btnLabel: "unload()",
+      action: async () => {
+        try {
+          await unloadVaultFromMemory();
+          success(`Vault unloaded`);
+        } catch (e) {
+          error(`Error unloading vault: ${JSON.stringify(e)}`);
+        }
+        checkState();
+      },
+    },
   ];
 
   async function checkState() {
@@ -135,15 +170,42 @@ function DeviceSecurity() {
     checkState();
   }
 
+  async function checkExists() {
+    try {
+      const vaultExists = await exists();
+      if (vaultExists) return success("Vault exists");
+      return warn("Vault does not exist");
+    } catch (e) {
+      error(`Error checking vault exists: ${JSON.stringify(e)}`);
+    }
+  }
+
+  async function destroyVaultFn() {
+    try {
+      await destroyVault();
+      success("Vault destroyed");
+    } catch (e) {
+      error(`Error destroying vault: ${JSON.stringify(e)}`);
+    }
+  }
+
   return (
     <div class="flex flex-col">
       <div class="prose mb-4">
         <h2 onClick={() => checkState()}>Device Security</h2>
       </div>
       {vault() === null && (
-        <button class="btn btn-primary btn-sm mb-4" onClick={initVault}>
-          Init Vault
-        </button>
+        <div class="flex flex-col gap-4 mb-4">
+          <button class="btn btn-primary btn-sm" onClick={initVault}>
+            Init Vault
+          </button>
+          <button class="btn btn-warning btn-sm" onClick={checkExists}>
+            Check Vault Exists
+          </button>
+          <button class="btn btn-error btn-sm" onClick={destroyVaultFn}>
+            Destroy Vault
+          </button>
+        </div>
       )}
       {vault() !== null ? (
         <div class="prose">
@@ -156,7 +218,7 @@ function DeviceSecurity() {
           </div>
         </div>
       ) : (
-        <p class="text-center">No Vault</p>
+        <p class="text-center">No Vault Loaded</p>
       )}
     </div>
   );
@@ -169,7 +231,6 @@ function VaultAction({ action }: { action: Action }) {
     setPending(true);
     await action.action();
     setPending(false);
-    success("Action complete");
   }
 
   return (
