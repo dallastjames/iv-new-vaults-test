@@ -177,7 +177,7 @@ function DeviceSecurity() {
         biometricsLocalizedFallbackTitle: `Don't get locked out`,
       },
       android: {
-        requireClass3Security: true,
+        requireClass3Security: false,
       },
     });
     checkState();
