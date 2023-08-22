@@ -40,6 +40,7 @@ type Action = {
 
 function DeviceSecurity() {
   const [locked, setLocked] = createSignal<boolean | null>(null);
+  const [config, setConfig] = createSignal<any | null>(null);
   const [
     vault,
     {
@@ -50,6 +51,7 @@ function DeviceSecurity() {
       exists,
       destroyVault,
       unloadVaultFromMemory,
+      getConfig,
     },
   ] = useDeviceSecurityVault();
 
@@ -141,6 +143,7 @@ function DeviceSecurity() {
         } catch (e) {
           error(`Error destroying vault: ${JSON.stringify(e)}`);
         }
+        checkState();
       },
     },
     {
@@ -159,13 +162,23 @@ function DeviceSecurity() {
   ];
 
   async function checkState() {
-    setLocked(await isLocked());
+    const vaultExists = await exists();
+    setLocked(!vaultExists || (await isLocked()));
+    setConfig(null);
   }
 
   async function initVault() {
     await createVault({
       allowBiometrics: true,
       allowSystemPasscode: true,
+      ios: {
+        biometricsLocalizedReason: "Reasons",
+        biometricsLocalizedCancelTitle: "Get out of here",
+        biometricsLocalizedFallbackTitle: `Don't get locked out`,
+      },
+      android: {
+        requireClass3Security: true,
+      },
     });
     checkState();
   }
@@ -180,6 +193,15 @@ function DeviceSecurity() {
     }
   }
 
+  async function checkConfig() {
+    try {
+      const config = await getConfig();
+      setConfig(config);
+    } catch (e) {
+      error(`Error checking config: ${JSON.stringify(e)}`);
+    }
+  }
+
   async function destroyVaultFn() {
     try {
       await destroyVault();
@@ -190,17 +212,22 @@ function DeviceSecurity() {
   }
 
   return (
-    <div class="flex flex-col">
+    <div class="flex flex-col w-full">
       <div class="prose mb-4">
-        <h2 onClick={() => checkState()}>Device Security</h2>
+        <h2 class="text-center" onClick={() => checkState()}>
+          Device Security
+        </h2>
       </div>
       {vault() === null && (
-        <div class="flex flex-col gap-4 mb-4">
+        <div class="flex flex-col gap-4 mb-4 m-auto">
           <button class="btn btn-primary btn-sm" onClick={initVault}>
             Init Vault
           </button>
           <button class="btn btn-warning btn-sm" onClick={checkExists}>
             Check Vault Exists
+          </button>
+          <button class="btn btn-info btn-sm" onClick={checkConfig}>
+            Check Config
           </button>
           <button class="btn btn-error btn-sm" onClick={destroyVaultFn}>
             Destroy Vault
@@ -218,7 +245,14 @@ function DeviceSecurity() {
           </div>
         </div>
       ) : (
-        <p class="text-center">No Vault Loaded</p>
+        <>
+          <p class="text-center">No Vault Loaded</p>
+          {config() && (
+            <pre class="max-w-full overflow-auto">
+              <code>{JSON.stringify(config(), null, 2)}</code>
+            </pre>
+          )}
+        </>
       )}
     </div>
   );

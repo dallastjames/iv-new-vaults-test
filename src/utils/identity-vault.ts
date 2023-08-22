@@ -3,6 +3,7 @@ import {
   DeviceSecurityVaultOptions,
   destroyVaultByVaultId,
   getVaultTypeForVaultId,
+  getConfigForVaultId,
 } from "@ionic-enterprise/identity-vault";
 import { Accessor, createSignal } from "solid-js";
 import { error, warn } from "./toast";
@@ -21,6 +22,7 @@ type UseDeviceSecurityVaultReturnType = [
     lock: () => Promise<void>;
     unlock: () => Promise<void>;
     unloadVaultFromMemory: () => Promise<void>;
+    getConfig: () => Promise<any>;
   }
 ];
 
@@ -71,7 +73,6 @@ export function useDeviceSecurityVault(): UseDeviceSecurityVaultReturnType {
     try {
       const v = vault();
       if (!v) {
-        warn(`isLocked: no vault exists`);
         return true;
       }
       const exists = await vault()?.exists();
@@ -99,6 +100,14 @@ export function useDeviceSecurityVault(): UseDeviceSecurityVaultReturnType {
   const unloadVaultFromMemory = async () => {
     setVault(null);
   };
+  const getConfig = async () => {
+    try {
+      const config = await getConfigForVaultId(vaultId);
+      return config;
+    } catch (e) {
+      error(`VAULT GET CONFIG ERROR: ${JSON.stringify(e)}`);
+    }
+  };
 
   return [
     vault,
@@ -110,6 +119,7 @@ export function useDeviceSecurityVault(): UseDeviceSecurityVaultReturnType {
       lock,
       unlock,
       unloadVaultFromMemory,
+      getConfig,
     },
   ];
 }
