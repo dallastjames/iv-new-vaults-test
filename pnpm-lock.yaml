@@ -5,7 +5,7 @@ specifiers:
   '@capacitor/cli': ^5.2.1
   '@capacitor/core': ^5.2.1
   '@capacitor/ios': ^5.2.1
-  '@ionic-enterprise/identity-vault': 5.11.2-dev-20230907T104623.0
+  '@ionic-enterprise/identity-vault': 5.12.1-dev-20231103T102618.0
   '@tailwindcss/typography': ^0.5.9
   autoprefixer: ^10.4.14
   daisyui: ^3.2.1
@@ -21,7 +21,7 @@ dependencies:
   '@capacitor/android': 5.2.1_@capacitor+core@5.2.1
   '@capacitor/core': 5.2.1
   '@capacitor/ios': 5.2.1_@capacitor+core@5.2.1
-  '@ionic-enterprise/identity-vault': 5.11.2-dev-20230907T104623.0_typescript@5.1.6
+  '@ionic-enterprise/identity-vault': 5.12.1-dev-20231103T102618.0_typescript@5.1.6
   solid-js: 1.7.8
   solid-toast: 0.5.0_solid-js@1.7.8
 
@@ -619,8 +619,8 @@ packages:
     dev: true
     optional: true
 
-  /@ionic-enterprise/identity-vault/5.11.2-dev-20230907T104623.0_typescript@5.1.6:
-    resolution: {integrity: sha512-D8Sy6bgRv9g/MJYqRP1BLbje5VtaQGRegbeMp9gCd2S1iujLnfAaIp+Gj1P64GIeSi04lsjroo5hDZy41m0ZZA==}
+  /@ionic-enterprise/identity-vault/5.12.1-dev-20231103T102618.0_typescript@5.1.6:
+    resolution: {integrity: sha512-PVMTE4UOnQ2XFsYwCELTVS1Auv91G7enPbCx3S7sEjfVMFx5bHnUwp/pf5fwlmsBRLXvbuZ65OI+heBVGq043Q==}
     engines: {cordovaDependencies: {3.0.0: {cordova-android: '>=6.3.0'}, 4.0.0: {cordova-android: '>=9.0.0-dev'}, 5.0.0: {cordova: '>=10.0.0', cordova-android: '>=10.0.0'}}}
     peerDependencies:
       typescript: '>=3.5'
