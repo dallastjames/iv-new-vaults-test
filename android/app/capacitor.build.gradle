@@ -12,7 +12,7 @@ dependencies {
 
 
 }
-apply from: "../../node_modules/.pnpm/@ionic-enterprise+identity-vault@5.12.1-dev-202312_37kk7adjxtavyhdmk3nkyv3htu/node_modules/@ionic-enterprise/identity-vault/src/android/ionicnativeauth.gradle"
+apply from: "../../node_modules/.pnpm/@ionic-enterprise+identity-vault@5.12.1-dev-202312_akiwxjvppbpufso57irz6y2jcu/node_modules/@ionic-enterprise/identity-vault/src/android/ionicnativeauth.gradle"
 
 if (hasProperty('postBuildExtras')) {
   postBuildExtras()
