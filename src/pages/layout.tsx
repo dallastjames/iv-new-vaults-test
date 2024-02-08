@@ -113,7 +113,7 @@ function DeviceSecurity() {
           const value = prompt("Enter a value to write to the vault");
           if (!value) return warn("No value entered");
           if (!vault()) return warn("Vault not initialized");
-          vault()?.setValue(SIMPLE_STRING_KEY, value);
+          await vault()?.setValue(SIMPLE_STRING_KEY, value);
           success(`Value written to vault: ${value}`);
         } catch (e) {
           error(`Error writing to vault: ${JSON.stringify(e)}`);
@@ -126,7 +126,7 @@ function DeviceSecurity() {
       action: async () => {
         try {
           if (!vault()) return warn("Vault not initialized");
-          vault()?.removeValue(SIMPLE_STRING_KEY);
+          await vault()?.removeValue(SIMPLE_STRING_KEY);
           success(`Value deleted from vault`);
         } catch (e) {
           error(`Error deleting from vault: ${JSON.stringify(e)}`);
@@ -139,6 +139,7 @@ function DeviceSecurity() {
       action: async () => {
         try {
           await vault()?.destroy();
+          await unloadVaultFromMemory();
           success(`Vault destroyed`);
         } catch (e) {
           error(`Error destroying vault: ${JSON.stringify(e)}`);
